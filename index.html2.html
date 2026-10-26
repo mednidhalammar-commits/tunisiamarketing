@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tunisia Marketing - المتجر الإلكتروني</title>
+    <style>
+        :root {
+            --primary-color: #e74c3c;
+            --secondary-color: #2c3e50;
+            --accent-color: #27ae60;
+            --bg-light: #f8f9fa;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-light); color: var(--text-color); line-height: 1.6; }
+        header { background-color: var(--secondary-color); color: #fff; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        header .logo { font-size: 24px; font-weight: bold; color: var(--primary-color); }
+        header nav ul { list-style: none; display: flex; gap: 20px; }
+        header nav a { color: #fff; text-decoration: none; font-size: 16px; }
+        .cart-btn-nav { background-color: var(--primary-color); color: #fff; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-weight: bold; }
+        .banner { background: linear-gradient(135deg, var(--secondary-color), #34495e); color: #fff; text-align: center; padding: 40px 20px; margin-bottom: 30px; }
+        .container { max-width: 1200px; margin: 0 auto 50px auto; padding: 0 20px; }
+        h2 { text-align: center; margin-bottom: 25px; color: var(--secondary-color); }
+        
+        /* لوحة إضافة المنتجات (Admin Panel) */
+        .admin-panel { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 40px; border: 2px dashed var(--accent-color); }
+        .admin-panel h3 { color: var(--accent-color); margin-bottom: 15px; }
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+
+        .products-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; }
+        .product-card { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
+        .product-card h3 { font-size: 18px; color: var(--secondary-color); margin-bottom: 8px; }
+        .product-card .price { font-size: 22px; font-weight: bold; color: var(--primary-color); margin-bottom: 15px; }
+        
+        .btn-action { background-color: var(--primary-color); color: #fff; border: none; padding: 10px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; }
+        .btn-action:hover { background-color: #c0392b; }
+        .btn-success { background-color: var(--accent-color); }
+        .btn-success:hover { background-color: #219150; }
+
+        .checkout-wrapper { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; margin-top: 40px; }
+        .order-form-container, .cart-details { background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 14px; }
+        .form-group input, .form-group select { width: 100%; padding: 11px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 15px; }
+        .cart-totals { margin-top: 20px; background: var(--bg-light); padding: 15px; border-radius: 8px; }
+        .cart-totals p { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 16px; }
+        @media(max-width: 768px) { .checkout-wrapper { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Tunisia Marketing</div>
+        <nav>
+            <ul>
+                <li><a href="#products">المنتجات</a></li>
+                <li><a href="#checkout">السلة والشراء</a></li>
+            </ul>
+        </nav>
+        <div>
+            <a href="#checkout" class="cart-btn-nav">🛒 سلة التسوق (<span id="cart-count">0</span>)</a>
+        </div>
+    </header>
+
+    <div class="banner">
+        <h1>مرحباً بكم في Tunisia Marketing</h1>
+        <p>أفضل المنتجات مع التوصيل لكل ولايات الجمهورية</p>
+    </div>
+
+    <div class="container">
+        
+        <!-- لوحة إضافة منتج جديد مباشرة من الموقع -->
+        <div class="admin-panel">
+            <h3>➕ إضافة منتج جديد للمتجر (مباشرة)</h3>
+            <div class="admin-grid">
+                <div class="form-group" style="margin:0;">
+                    <input type="text" id="new-name" placeholder="اسم المنتج الجديد">
+                </div>
+                <div class="form-group" style="margin:0;">
+                    <input type="number" id="new-price" placeholder="السعر بالدينار (مثال: 50)">
+                </div>
+                <div class="form-group" style="margin:0;">
+                    <input type="text" id="new-image" placeholder="رابط الصورة (URL)">
+                </div>
+                <div>
+                    <button type="button" class="btn-action btn-success" onclick="addNewProduct()" style="padding: 11px;">إضافة المنتج للموقع</button>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="products">منتجاتنا المتنوعة</h2>
+        
+        <!-- شاشة عرض المنتجات تتحدث تلقائياً -->
+        <div class="products-container" id="products-container">
+            <!-- المنتجات ستظهر هنا ديناميكياً -->
+        </div>
+
+        <h2 id="checkout" style="margin-top: 50px;">تأكيد الطلب والسلة</h2>
+        
+        <div class="checkout-wrapper">
+            <div class="order-form-container">
+                <h3>معلومات التوصيل</h3>
+                <form id="order-form" onsubmit="submitOrder(event)">
+                    <div class="form-group">
+                        <label>الاسم واللقب:</label>
+                        <input type="text" id="fullname" required placeholder="مثال: محمد بن صالح">
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الهاتف:</label>
+                        <input type="text" id="phone" required placeholder="مثال: 20887014">
+                    </div>
+                    <div class="form-group">
+                        <label>الولاية:</label>
+                        <select id="governorate" required>
+                            <option value="">اختر الولاية...</option>
+                            <option value="تونس">تونس</option>
+                            <option value="أريانة">أريانة</option>
+                            <option value="بن عروس">بن عروس</option>
+                            <option value="سوسة">سوسة</option>
+                            <option value="صفاقس">صفاقس</option>
+                            <option value="المنستير">المنستير</option>
+                            <option value="نابل">نابل</option>
+                            <option value="بنزرت">بنزرت</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>المعتمدية:</label>
+                        <input type="text" id="delegation" required placeholder="المعتمدية">
+                    </div>
+                    <div class="form-group">
+                        <label>العنوان التفصيلي:</label>
+                        <input type="text" id="address" required placeholder="اسم الشارع ورقم الدار">
+                    </div>
+                    <button type="submit" class="btn-action btn-success" style="font-size: 18px; padding: 14px;">تأكيد الطلب الآن</button>
+                </form>
+            </div>
+
+            <div class="cart-details">
+                <h3>ملخص السلة</h3>
+                <div id="cart-items-list">
+                    <p style="color: #777;">السلة فارغة حالياً.</p>
+                </div>
+                <div class="cart-totals">
+                    <p>مجموع المنتجات: <span id="subtotal">0</span> د.ت</p>
+                    <p>سعر التوصيل: <span id="shipping-cost">7</span> د.ت</p>
+                    <hr style="margin: 8px 0;">
+                    <p><strong>المجموع الجملي: <span id="total-price">7</span> د.ت</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SHIPPING_FEE = 7;
+        let cart = [];
+
+        // قائمة المنتجات الافتراضية
+        let products = [
+            { id: 1, name: "ماكينة حلاقة متكاملة Rasoir 5 en 1", price: 75, image: "https://m.media-amazon.com/images/I/71X8kS1k52L._AC_SL1500_.jpg" },
+            { id: 2, name: "سماعات بلوتوث Sans Fil", price: 45, image: "https://via.placeholder.com/250x180?text=Sans+Fil" },
+            { id: 3, name: "حقيبة ظهر عصرية", price: 35, image: "https://via.placeholder.com/250x180?text=Sac+Dos" }
+        ];
+
+        // عرض المنتجات في الصفحة
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+
+            products.forEach(product => {
+                container.innerHTML += `
+                    <div class="product-card">
+                        <img src="${product.image}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <p class="price">${product.price} د.ت</p>
+                        <button class="btn-action" onclick="addToCart(${product.id})">أضف إلى السلة 🛒</button>
+                    </div>
+                `;
+            });
+        }
+
+        // إضافة منتج جديد للمتجر مباشرة عبر اللوحة
+        function addNewProduct() {
+            const name = document.getElementById('new-name').value;
+            const price = parseFloat(document.getElementById('new-price').value);
+            const image = document.getElementById('new-image').value;
+
+            if (!name || !price) {
+                alert("الرجاء إدخال اسم المنتج والسعر على الأقل!");
+                return;
+            }
+
+            const newProduct = {
+                id: products.length + 1,
+                name: name,
+                price: price,
+                image: image ? image : "https://via.placeholder.com/250x180?text=Tunisia+Marketing"
+            };
+
+            products.push(newProduct);
+            renderProducts();
+
+            // تفريغ خانات الإدخال
+            document.getElementById('new-name').value = '';
+            document.getElementById('new-price').value = '';
+            document.getElementById('new-image').value = '';
+
+            alert("تم إضافة المنتج بنجاح إلى المتجر!");
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            cart.push(product);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            document.getElementById('cart-count').innerText = cart.length;
+            const list = document.getElementById('cart-items-list');
+            const subtotalEl = document.getElementById('subtotal');
+            const totalPriceEl = document.getElementById('total-price');
+
+            if (cart.length === 0) {
+                list.innerHTML = '<p style="color: #777;">السلة فارغة حالياً.</p>';
+                subtotalEl.innerText = '0';
+                totalPriceEl.innerText = SHIPPING_FEE;
+                return;
+            }
+
+            list.innerHTML = '';
+            let subtotal = 0;
+            cart.forEach((item, index) => {
+                subtotal += item.price;
+                list.innerHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 4px;">
+                        <span>${item.name}</span>
+                        <span><b>${item.price} د.ت</b> <button onclick="removeFromCart(${index})" style="background:none; border:none; color:red; cursor:pointer; font-weight:bold; margin-right:5px;">❌</button></span>
+                    </div>
+                `;
+            });
+
+            subtotalEl.innerText = subtotal;
+            totalPriceEl.innerText = subtotal + SHIPPING_FEE;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function submitOrder(e) {
+            e.preventDefault();
+            if (cart.length === 0) {
+                alert("السلة فارغة! الرجاء إضافة منتج على الأقل.");
+                return;
+            }
+            const name = document.getElementById('fullname').value;
+            const phone = document.getElementById('phone').value;
+            const gov = document.getElementById('governorate').value;
+            const total = document.getElementById('total-price').innerText;
+
+            alert(`شكراً لك يا ${name}!\nتم تسجيل طلبك بنجاح لولاية ${gov}.\nالمبلغ الجملي: ${total} د.ت\nسنتصل بك على ${phone} قريباً.`);
+            cart = [];
+            updateCartUI();
+            document.getElementById('order-form').reset();
+        }
+
+        // تشغيل عرض المنتجات أول ما تحل الصفحة
+        renderProducts();
+    </script>
+</body>
+</html>
